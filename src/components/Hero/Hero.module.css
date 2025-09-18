@@ -89,6 +89,85 @@
   text-transform: uppercase;
 }
 
+.countdownWrapper {
+  margin: 0 auto var(--spacing-xl);
+  max-width: 760px;
+}
+
+.countdownGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(70px, 1fr));
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  justify-items: center;
+  align-items: stretch;
+}
+
+.timeSegment {
+  background: linear-gradient(
+    145deg,
+    var(--bg-secondary) 0%,
+    var(--bg-primary) 100%
+  );
+  border: 2px solid var(--accent-rose);
+  box-shadow: 0 0 8px rgba(225, 29, 72, 0.3), 4px 4px 0 var(--bg-secondary);
+  padding: clamp(0.6rem, 1.5vw, 0.9rem) clamp(0.5rem, 1.2vw, 0.8rem);
+  width: 100%;
+  text-align: center;
+  position: relative;
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+}
+
+.segmentHidden {
+  visibility: hidden;
+}
+
+/* Glow pulse when segment locks into final value */
+.segmentPulse {
+  animation: segmentGlow 0.7s ease-out forwards;
+}
+
+@keyframes segmentGlow {
+  0% {
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.2), 0 0 4px var(--accent-rose);
+    filter: drop-shadow(0 0 2px var(--accent-rose));
+  }
+  40% {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6), 0 0 16px var(--accent-rose);
+  }
+  70% {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.35), 0 0 10px var(--accent-rose);
+  }
+  100% {
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.25), 0 0 5px var(--accent-rose);
+  }
+}
+
+.timeValue {
+  font-size: clamp(1.4rem, 4.5vw, 2.4rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.25);
+  line-height: 1.1;
+}
+
+.timeLabel {
+  font-size: clamp(0.55rem, 2vw, 0.75rem);
+  text-transform: uppercase;
+  margin-top: 0.35rem;
+  color: var(--text-primary);
+  opacity: 0.85;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+}
+
+.countdownEnded {
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  color: var(--accent-rose);
+  text-shadow: 0 0 10px rgba(225, 29, 72, 0.5);
+  letter-spacing: 0.08em;
+}
 
 .registerBtn:hover {
   transform: translateY(-2px);
@@ -157,10 +236,15 @@
     margin-bottom: var(--spacing-sm);
   }
 
-  .heroTitleD,
   .heroTitleVine {
     text-shadow: 0 0 7px rgba(255, 255, 255, 0.3),
       0 0 12px rgba(255, 255, 255, 0.15), 4px 4px 0px var(--bg-secondary),
+      8px 8px 0px var(--bg-primary);
+  }
+
+  .heroTitleD {
+    text-shadow: 0 0 7px rgba(255, 50, 100, 0.3),
+      0 0 12px rgba(255, 50, 100, 0.15), 4px 4px 0px var(--bg-secondary),
       8px 8px 0px var(--bg-primary);
   }
 
@@ -173,6 +257,15 @@
   .registerBtn {
     padding: 0.8rem 2rem;
     box-shadow: 0 0 6px rgba(225, 29, 72, 0.3), 4px 4px 0 var(--bg-secondary);
+  }
+
+  .timeSegment {
+    padding: 0.5rem 0.5rem;
+  }
+
+  .timeLabel {
+    font-size: 0.5rem;
+    text-align: center;
   }
 }
 
@@ -190,10 +283,15 @@
     letter-spacing: 0.02em;
   }
 
-  .heroTitleD,
   .heroTitleVine {
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.3),
       0 0 10px rgba(255, 255, 255, 0.15), 3px 3px 0px var(--bg-secondary),
+      6px 6px 0px var(--bg-primary);
+  }
+
+  .heroTitleD {
+    text-shadow: 0 0 5px rgba(255, 50, 100, 0.3),
+      0 0 10px rgba(255, 50, 100, 0.15), 3px 3px 0px var(--bg-secondary),
       6px 6px 0px var(--bg-primary);
   }
 
