@@ -275,7 +275,7 @@
   }
 
   .heroContent {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-xs);
   }
 
   .heroTitle {

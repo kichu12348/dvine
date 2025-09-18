@@ -61,7 +61,7 @@
 
 @media (max-width: 600px) {
   .aboutSection {
-    padding: var(--spacing-xl) var(--spacing-sm) var(--spacing-lg);
+    padding: var(--spacing-xl) var(--spacing-sm);
   }
   .heading {
     font-size: clamp(1.8rem, 8vw, 2.8rem);
