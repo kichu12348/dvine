@@ -3,16 +3,20 @@ import styles from "./Footer.module.css";
 import gsap from "gsap";
 import {
   FaInstagram,
-//   FaLinkedin,
-//   FaGithub,
-//   FaTwitter,
+  //   FaLinkedin,
+  //   FaGithub,
+  //   FaTwitter,
   FaMapMarkerAlt,
   FaEnvelope,
   FaHeart,
   FaCalendarAlt,
 } from "react-icons/fa";
 
-export default function Footer() {
+export default function Footer({
+  isNotRegisterPage = true,
+}: {
+  isNotRegisterPage?: boolean;
+}) {
   const footerRef = useRef<HTMLElement>(null);
 
   const scrollToSection = (id: string) => {
@@ -50,7 +54,16 @@ export default function Footer() {
   return (
     <footer ref={footerRef} className={styles.footer}>
       <div className={styles.content}>
-        <div className={styles.main}>
+        <div
+          className={styles.main}
+          style={
+            {
+              "--template-grid": isNotRegisterPage
+                ? "2fr 1fr 1fr minmax(max-content, 1fr)"
+                : "2fr 1fr minmax(max-content, 1fr)",
+            } as React.CSSProperties
+          }
+        >
           {/* Event Info */}
           <div className={styles.section}>
             <h3 className={styles.title}>D'VINE</h3>
@@ -75,35 +88,37 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div className={styles.section}>
-            <h4 className={styles.sectionTitle}>Quick Links</h4>
-            <ul className={styles.linkList}>
-              <li>
-                <a
-                  onClick={() => scrollToSection("about")}
-                  className={styles.link}
-                >
-                  About
-                </a>
-              </li>
-              <li>
-                <a
-                  onClick={() => scrollToSection("benefits")}
-                  className={styles.link}
-                >
-                  Benefits
-                </a>
-              </li>
-              <li>
-                <a
-                  onClick={() => scrollToSection("faq")}
-                  className={styles.link}
-                >
-                  FAQ
-                </a>
-              </li>
-            </ul>
-          </div>
+          {isNotRegisterPage && (
+            <div className={styles.section}>
+              <h4 className={styles.sectionTitle}>Quick Links</h4>
+              <ul className={styles.linkList}>
+                <li>
+                  <a
+                    onClick={() => scrollToSection("about")}
+                    className={styles.link}
+                  >
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={() => scrollToSection("benefits")}
+                    className={styles.link}
+                  >
+                    Benefits
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={() => scrollToSection("faq")}
+                    className={styles.link}
+                  >
+                    FAQ
+                  </a>
+                </li>
+              </ul>
+            </div>
+          )}
 
           {/* Organizations */}
           <div className={styles.section}>

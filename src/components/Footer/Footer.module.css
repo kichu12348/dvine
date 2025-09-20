@@ -13,7 +13,7 @@
 
 .main {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: var(--template-grid);
   gap: var(--spacing-xl);
   margin-bottom: var(--spacing-lg);
 }
@@ -105,6 +105,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  flex-wrap: wrap;
 }
 
 .socialLink {
@@ -163,10 +164,7 @@
 
 /* Responsive Design */
 @media (max-width: 900px) {
-  .main {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-lg);
-  }
+  .main { grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); }
 }
 
 @media (max-width: 600px) {
@@ -174,10 +172,7 @@
     padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
   }
 
-  .main {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-md);
-  }
+  .main { grid-template-columns: 1fr; gap: var(--spacing-md); }
 
   .copyright {
     text-align: center;
@@ -201,8 +196,5 @@
     font-size: 1.2rem;
   }
 
-  .socialLink {
-    width: 36px;
-    height: 36px;
-  }
+  .socialLink { width: 36px; height: 36px; font-size: 1.5rem; }
 }

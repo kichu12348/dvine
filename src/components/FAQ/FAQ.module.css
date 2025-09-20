@@ -28,13 +28,13 @@
   }
 
   .question span{
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
   .answer.open {
     padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
 
     p{
-        font-size: 0.8rem;
+        font-size: 0.9rem;
     }
   }
 }

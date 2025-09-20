@@ -71,9 +71,7 @@
   .heading {
     font-size: clamp(1.8rem, 8vw, 2.8rem);
   }
-  .text {
-    font-size: 0.8rem;
-  }
+  .text { font-size: 0.95rem; }
 }
 
 /* Reduced motion: no animation jump-in (we still fade for readability) */

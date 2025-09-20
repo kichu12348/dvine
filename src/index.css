@@ -15,6 +15,8 @@
   --text-primary: #FFFFFF;
   --text-muted: #AAAAAA;
   --border-dark: #333333;
+  /* Header */
+  --header-height: 100px;
   
   /* Spacings */
   --spacing-xs: 0.5rem;
@@ -132,7 +134,7 @@ a {
 
 /* Focus styles for accessibility */
 *:focus {
-  outline: 2px solid var(--accent-primary);
+  outline: 2px solid var(--accent-rose);
   outline-offset: 2px;
 }
 
@@ -157,6 +159,19 @@ a {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Responsive CSS variables */
+@media (max-width: 900px) {
+  :root {
+    --header-height: 84px;
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --header-height: 68px;
   }
 }
 

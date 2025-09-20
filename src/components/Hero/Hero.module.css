@@ -5,7 +5,7 @@
   justify-content: center;
   align-items: center;
   padding: var(--spacing-lg);
-  padding-top: calc(var(--spacing-lg) + 60px); /* Extra padding for header */
+  padding-top: calc(var(--spacing-lg) + var(--header-height)); /* Extra padding for header */
   position: relative;
   overflow: hidden;
   /* background: var(--bg-primary); */
@@ -225,6 +225,7 @@
   .heroContainer {
     padding: var(--spacing-md);
   }
+  .countdownGrid { grid-template-columns: repeat(2, minmax(70px, 1fr)); }
 
   .heroTitle {
     font-size: clamp(2.5rem, 12vw, 5rem);
@@ -268,6 +269,7 @@
   .heroContainer {
     padding: var(--spacing-sm);
   }
+  .countdownGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
   .heroContent {
     padding: 0;
