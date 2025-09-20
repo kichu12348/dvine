@@ -1,0 +1,159 @@
+import { useEffect, useRef } from "react";
+import styles from "./Footer.module.css";
+import gsap from "gsap";
+import {
+  FaInstagram,
+//   FaLinkedin,
+//   FaGithub,
+//   FaTwitter,
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaHeart,
+  FaCalendarAlt,
+} from "react-icons/fa";
+
+export default function Footer() {
+  const footerRef = useRef<HTMLElement>(null);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    if (!footerRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.set(`.${styles.content}`, { opacity: 0, y: 20 });
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              gsap.to(`.${styles.content}`, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: "power3.out",
+              });
+              obs.disconnect();
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      obs.observe(footerRef.current as Element);
+    }, footerRef);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <footer ref={footerRef} className={styles.footer}>
+      <div className={styles.content}>
+        <div className={styles.main}>
+          {/* Event Info */}
+          <div className={styles.section}>
+            <h3 className={styles.title}>D'VINE</h3>
+            <p className={styles.description}>
+              An 18-hour UI/UX design hackathon by IEEE SB CEC and IEDC BOOTCAMP
+              CEC.
+            </p>
+            <div className={styles.contact}>
+              <span className={styles.contactItem}>
+                <FaCalendarAlt aria-hidden className={styles.contactIcon} />
+                18–19 October
+              </span>
+              <span className={styles.contactItem}>
+                <FaMapMarkerAlt aria-hidden className={styles.contactIcon} />
+                Jain University, Kochi
+              </span>
+              <span className={styles.contactItem}>
+                <FaEnvelope aria-hidden className={styles.contactIcon} />
+                contact@dvine.dev
+              </span>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div className={styles.section}>
+            <h4 className={styles.sectionTitle}>Quick Links</h4>
+            <ul className={styles.linkList}>
+              <li>
+                <a
+                  onClick={() => scrollToSection("about")}
+                  className={styles.link}
+                >
+                  About
+                </a>
+              </li>
+              <li>
+                <a
+                  onClick={() => scrollToSection("benefits")}
+                  className={styles.link}
+                >
+                  Benefits
+                </a>
+              </li>
+              <li>
+                <a
+                  onClick={() => scrollToSection("faq")}
+                  className={styles.link}
+                >
+                  FAQ
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Organizations */}
+          <div className={styles.section}>
+            <h4 className={styles.sectionTitle}>Organized By</h4>
+            <div className={styles.orgList}>
+              <span className={styles.org}>IEEE SB CEC</span>
+              <span className={styles.org}>IEDC BOOTCAMP CEC</span>
+            </div>
+          </div>
+
+          {/* Social Media */}
+          <div className={styles.section}>
+            <h4 className={styles.sectionTitle}>Follow Us</h4>
+            <div className={styles.socialLinks}>
+              <a
+                href="https://www.instagram.com/dvine.cec"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialLink}
+                aria-label="Instagram"
+              >
+                <FaInstagram />
+              </a>
+              {/* <a href="#" className={styles.socialLink} aria-label="LinkedIn">
+                <FaLinkedin />
+              </a>
+              <a href="#" className={styles.socialLink} aria-label="Twitter">
+                <FaTwitter />
+              </a>
+              <a href="#" className={styles.socialLink} aria-label="GitHub">
+                <FaGithub />
+              </a> */}
+            </div>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className={styles.bottom}>
+          <div className={styles.copyright}>
+            <p>&copy; 2025 D'VINE. All rights reserved.</p>
+            <p className={styles.madeWith}>
+              Made wid{" "}
+              <span className={styles.heart}>
+                <FaHeart color="red" />
+              </span>{" "}
+              by kichu
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

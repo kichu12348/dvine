@@ -4,6 +4,10 @@ import LoadingScreen from './components/LoadingScreen';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import AboutSection from './components/About';
+import BenefitsSection from './components/Benefits';
+import FAQSection from './components/FAQ';
+import Footer from './components/Footer';
+import Background from './components/Background';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,11 +34,14 @@ function App() {
       {!isLoading && (
         <>
           <Header />
+          <Background />
           <main>
             <Hero onRegisterClick={handleRegisterClick} />
             <AboutSection />
-            {/* Additional sections can be added here */}
+            <BenefitsSection />
+            <FAQSection />
           </main>
+          <Footer />
         </>
       )}
     </>

@@ -34,7 +34,8 @@ export function Hero({ onRegisterClick }: HeroProps) {
   }
 
   function calculateTimeLeft(): TimeLeft {
-    const target = new Date("2025-09-30T23:59:59");
+    // Countdown to October 18, 2025 00:00:00 local time
+    const target = new Date("2025-10-18T00:00:00");
     const now = new Date();
     const total = target.getTime() - now.getTime();
     const clamp = (n: number) => (n < 0 ? 0 : n);

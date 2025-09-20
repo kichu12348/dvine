@@ -8,7 +8,7 @@
   padding-top: calc(var(--spacing-lg) + 60px); /* Extra padding for header */
   position: relative;
   overflow: hidden;
-  background: var(--bg-primary);
+  /* background: var(--bg-primary); */
 }
 
 .heroContainer::before {
@@ -60,7 +60,7 @@
 
 .heroSubtitle {
   font-family: var(--font-body);
-  font-size: clamp(1.1rem, 4vw, 1.5rem);
+  font-size: 1rem;
   color: var(--text-primary);
   margin-bottom: var(--spacing-xl);
   font-weight: 300;
@@ -103,11 +103,6 @@
 }
 
 .timeSegment {
-  background: linear-gradient(
-    145deg,
-    var(--bg-secondary) 0%,
-    var(--bg-primary) 100%
-  );
   border: 2px solid var(--accent-rose);
   box-shadow: 0 0 8px rgba(225, 29, 72, 0.3), 4px 4px 0 var(--bg-secondary);
   padding: clamp(0.6rem, 1.5vw, 0.9rem) clamp(0.5rem, 1.2vw, 0.8rem);
@@ -188,13 +183,13 @@
 
 @keyframes btnPulse {
   0% {
-    box-shadow: 0 0 8px rgba(225, 29, 72, 0.3), 6px 6px 0 var(--bg-secondary);
+    box-shadow: 0 0 8px rgba(225, 29, 72, 0.1), 6px 6px 0 var(--bg-secondary);
   }
   50% {
-    box-shadow: 0 0 15px rgba(225, 29, 72, 0.5), 6px 6px 0 var(--bg-secondary);
+    box-shadow: 0 0 15px rgba(225, 29, 72, 0.2), 6px 6px 0 var(--bg-secondary);
   }
   100% {
-    box-shadow: 0 0 8px rgba(225, 29, 72, 0.3), 6px 6px 0 var(--bg-secondary);
+    box-shadow: 0 0 8px rgba(225, 29, 72, 0.1), 6px 6px 0 var(--bg-secondary);
   }
 }
 
@@ -296,7 +291,7 @@
   }
 
   .heroSubtitle {
-    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    font-size: 0.8rem;
     margin-bottom: var(--spacing-md);
     max-width: 95%;
   }
