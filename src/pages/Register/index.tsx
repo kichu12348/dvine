@@ -18,7 +18,10 @@ type Option<T = string | number> = {
   value: T;
 };
 
-function useOutsideClick(ref: React.RefObject<HTMLElement>, onOutside: () => void) {
+function useOutsideClick(
+  ref: React.RefObject<HTMLElement>,
+  onOutside: () => void
+) {
   useEffect(() => {
     function handle(e: MouseEvent) {
       if (!ref.current) return;
@@ -46,17 +49,15 @@ function CustomDropdown<T extends string | number>({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useMemo(() => ({ current: null as unknown as HTMLElement }), []);
-  useOutsideClick(ref as unknown as React.RefObject<HTMLElement>, () => setOpen(false));
+  useOutsideClick(ref as unknown as React.RefObject<HTMLElement>, () =>
+    setOpen(false)
+  );
 
   const selected = options.find((o) => o.value === value);
 
   return (
     <div className={`${styles.dropdown} ${className ?? ""}`} ref={ref as any}>
-      {label && (
-        <label className={styles.label}>
-          {label}
-        </label>
-      )}
+      {label && <label className={styles.label}>{label}</label>}
       <button
         type="button"
         className={styles.dropdownButton}
@@ -64,7 +65,7 @@ function CustomDropdown<T extends string | number>({
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
-        <span>{selected ? selected.label : (placeholder ?? "Select")}</span>
+        <span>{selected ? selected.label : placeholder ?? "Select"}</span>
         <span className={styles.chevron} aria-hidden>
           ▾
         </span>
@@ -75,7 +76,9 @@ function CustomDropdown<T extends string | number>({
             <li key={String(opt.value)} role="option">
               <button
                 type="button"
-                className={`${styles.dropdownItem} ${opt.value === value ? styles.dropdownItemActive : ""}`}
+                className={`${styles.dropdownItem} ${
+                  opt.value === value ? styles.dropdownItemActive : ""
+                }`}
                 onClick={() => {
                   onChange(opt.value);
                   setOpen(false);
@@ -99,11 +102,14 @@ export default function RegisterPage() {
   ]);
   const [transactionId, setTransactionId] = useState("");
   const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
-  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
+  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(
+    null
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const upiId = "christopiusofficial@okicici";
 
   useEffect(() => {
     setMembers((prev) => {
@@ -124,7 +130,9 @@ export default function RegisterPage() {
   ];
 
   function updateMember(idx: number, patch: Partial<Member>) {
-    setMembers((prev) => prev.map((m, i) => (i === idx ? { ...m, ...patch } : m)));
+    setMembers((prev) =>
+      prev.map((m, i) => (i === idx ? { ...m, ...patch } : m))
+    );
   }
 
   function sanitizePhoneInput(value: string) {
@@ -221,8 +229,14 @@ export default function RegisterPage() {
         })),
         payment: {
           transactionId,
+          amount: 250,
+          currency: "INR",
           screenshot: screenshotFile
-            ? { name: screenshotFile.name, size: screenshotFile.size, type: screenshotFile.type }
+            ? {
+                name: screenshotFile.name,
+                size: screenshotFile.size,
+                type: screenshotFile.type,
+              }
             : null,
         },
         timestamp: new Date().toISOString(),
@@ -230,7 +244,9 @@ export default function RegisterPage() {
       // For now, just log the data
       // eslint-disable-next-line no-console
       console.log("Registration payload", payload);
-      setSuccess("Registration data prepared. Integrate submission backend next.");
+      setSuccess(
+        "Registration data prepared. Integrate submission backend next."
+      );
     } catch (err) {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -245,12 +261,16 @@ export default function RegisterPage() {
       <main className={styles.main}>
         <section className={styles.card}>
           <h1 className={styles.title}>Team Registration</h1>
-          <p className={styles.subtitle}>Register as an individual or a team of two.</p>
+          <p className={styles.subtitle}>
+            Register as an individual or a team of two.
+          </p>
 
           <form className={styles.form} onSubmit={onSubmit}>
             <div className={styles.fieldGroup}>
               <div className={styles.field}>
-                <label htmlFor="teamName" className={styles.label}>Team Name</label>
+                <label htmlFor="teamName" className={styles.label}>
+                  Team Name
+                </label>
                 <input
                   id="teamName"
                   className={styles.input}
@@ -278,33 +298,43 @@ export default function RegisterPage() {
                   <h3 className={styles.memberTitle}>Member {idx + 1}</h3>
                   <div className={styles.memberGrid}>
                     <div className={styles.field}>
-                      <label className={styles.label} htmlFor={`name-${idx}`}>Name</label>
+                      <label className={styles.label} htmlFor={`name-${idx}`}>
+                        Name
+                      </label>
                       <input
                         id={`name-${idx}`}
                         className={styles.input}
                         type="text"
                         placeholder="Full name"
                         value={m.name}
-                        onChange={(e) => updateMember(idx, { name: e.target.value })}
+                        onChange={(e) =>
+                          updateMember(idx, { name: e.target.value })
+                        }
                         required
                       />
                     </div>
 
                     <div className={styles.field}>
-                      <label className={styles.label} htmlFor={`email-${idx}`}>Email</label>
+                      <label className={styles.label} htmlFor={`email-${idx}`}>
+                        Email
+                      </label>
                       <input
                         id={`email-${idx}`}
                         className={styles.input}
                         type="email"
                         placeholder="name@example.com"
                         value={m.email}
-                        onChange={(e) => updateMember(idx, { email: e.target.value })}
+                        onChange={(e) =>
+                          updateMember(idx, { email: e.target.value })
+                        }
                         required
                       />
                     </div>
 
                     <div className={styles.field}>
-                      <label className={styles.label} htmlFor={`phone-${idx}`}>Phone (+91)</label>
+                      <label className={styles.label} htmlFor={`phone-${idx}`}>
+                        Phone (+91)
+                      </label>
                       <div className={styles.phoneGroup}>
                         <span className={styles.phonePrefix}>+91</span>
                         <input
@@ -315,7 +345,11 @@ export default function RegisterPage() {
                           maxLength={10}
                           placeholder="10-digit number"
                           value={m.phone}
-                          onChange={(e) => updateMember(idx, { phone: sanitizePhoneInput(e.target.value) })}
+                          onChange={(e) =>
+                            updateMember(idx, {
+                              phone: sanitizePhoneInput(e.target.value),
+                            })
+                          }
                           required
                           title="Enter 10-digit Indian mobile number"
                         />
@@ -337,9 +371,42 @@ export default function RegisterPage() {
 
             <section className={styles.paymentSection}>
               <h3 className={styles.paymentTitle}>Payment</h3>
+              <p className={styles.feeNotice}>Registration Fee: ₹250</p>
+              <div className={styles.upiBlock}>
+                <div className={styles.qrWrap}>
+                  <img
+                    src="/qr/qr.jpeg"
+                    alt="UPI QR code"
+                    className={styles.qrImg}
+                  />
+                </div>
+                <div className={styles.upiInfo}>
+                  <div
+                    className={styles.upiRow}
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(upiId);
+                        setSuccess("UPI ID copied to clipboard");
+                      } catch {
+                        setError("Failed to copy UPI ID");
+                      }
+                    }}
+                  >
+                    <span className={styles.upiValue}>
+                      {upiId}
+                    </span>
+                  </div>
+                  <span className={styles.helper}>
+                    Scan the QR or pay to the UPI ID above, then enter the
+                    transaction ID or upload a screenshot below.
+                  </span>
+                </div>
+              </div>
               <div className={styles.paymentGrid}>
                 <div className={styles.field}>
-                  <label className={styles.label} htmlFor="transactionId">Transaction ID</label>
+                  <label className={styles.label} htmlFor="transactionId">
+                    Transaction ID
+                  </label>
                   <input
                     id="transactionId"
                     className={styles.input}
@@ -352,7 +419,9 @@ export default function RegisterPage() {
                 </div>
 
                 <div className={styles.field}>
-                  <label className={styles.label} htmlFor="screenshot">Payment Screenshot</label>
+                  <label className={styles.label} htmlFor="screenshot">
+                    Payment Screenshot
+                  </label>
                   <div className={styles.fileInputWrap}>
                     <input
                       id="screenshot"
@@ -371,10 +440,16 @@ export default function RegisterPage() {
                         {screenshotFile ? "Change image" : "Select image"}
                       </button>
                       <span className={styles.fileName}>
-                        {screenshotFile ? screenshotFile.name : "No file selected"}
+                        {screenshotFile
+                          ? screenshotFile.name
+                          : "No file selected"}
                       </span>
                       {screenshotFile && (
-                        <button type="button" className={styles.fileRemove} onClick={clearScreenshot}>
+                        <button
+                          type="button"
+                          className={styles.fileRemove}
+                          onClick={clearScreenshot}
+                        >
                           Remove
                         </button>
                       )}
@@ -382,10 +457,16 @@ export default function RegisterPage() {
                   </div>
                   {screenshotPreview && (
                     <div className={styles.previewBox}>
-                      <img src={screenshotPreview} alt="Payment screenshot preview" className={styles.previewImg} />
+                      <img
+                        src={screenshotPreview}
+                        alt="Payment screenshot preview"
+                        className={styles.previewImg}
+                      />
                     </div>
                   )}
-                  <span className={styles.helper}>Accepted: image files up to 5MB.</span>
+                  <span className={styles.helper}>
+                    Accepted: image files up to 5MB.
+                  </span>
                 </div>
               </div>
             </section>
@@ -394,7 +475,11 @@ export default function RegisterPage() {
             {success && <div className={styles.success}>{success}</div>}
 
             <div className={styles.actions}>
-              <button className={styles.submit} type="submit" disabled={submitting}>
+              <button
+                className={styles.submit}
+                type="submit"
+                disabled={submitting}
+              >
                 {submitting ? "Submitting..." : "Submit"}
               </button>
             </div>

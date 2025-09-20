@@ -215,6 +215,71 @@
 	margin-bottom: var(--spacing-md);
 }
 
+.feeNotice {
+	color: var(--accent-rose-light);
+	margin-top: -6px;
+	margin-bottom: var(--spacing-md);
+}
+
+.upiBlock {
+	display: grid;
+	grid-template-columns: 180px 1fr;
+	gap: var(--spacing-lg);
+	align-items: center;
+	margin-bottom: var(--spacing-lg);
+}
+
+.qrWrap {
+	border: 1px solid var(--border-dark);
+	border-radius: 12px;
+	background: rgba(255,255,255,0.02);
+	padding: 12px;
+}
+
+.qrImg {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 8px;
+}
+
+
+
+.upiRow {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	gap: 10px;
+	align-items: center;
+    justify-content: center;
+	padding: 10px 12px;
+	border: 1px dashed var(--border-dark);
+	border-radius: 10px;
+	background: rgba(255,255,255,0.02);
+	margin-bottom: 8px;
+    width: fit-content;
+}
+
+.upiLabel {
+	color: var(--text-muted);
+}
+
+.upiValue {
+	font-weight: 600;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+    font-family: "Inter, sans-serif";
+    letter-spacing: 0.02em;
+}
+
+.copyBtn {
+	background: transparent;
+	color: var(--text-primary);
+	border: 1px solid var(--border-dark);
+	border-radius: 8px;
+	padding: 0.5rem 0.75rem;
+}
+
 .paymentGrid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -295,6 +360,9 @@
 	.memberGrid {
 		grid-template-columns: 1fr;
 	}
+	.upiBlock {
+		grid-template-columns: 1fr;
+	}
 	.paymentGrid {
 		grid-template-columns: 1fr;
 	}
@@ -332,6 +400,10 @@
 		grid-template-columns: auto 1fr;
 		gap: 6px;
 	}
+
+    .upiRow{
+        width: auto;
+    }
 }
 
 @media (max-width: 380px) {
