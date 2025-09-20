@@ -1,0 +1,345 @@
+/* Register Page Styles */
+
+.main {
+	min-height: 60vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--spacing-xl) var(--spacing-sm);
+	color: var(--text-primary);
+	position: relative;
+	z-index: 1;
+}
+
+.main input {
+    font-size: 16px;
+}
+
+.card {
+	width: 100%;
+	max-width: 960px;
+	background: var(--bg-secondary);
+	border: 1px solid var(--border-dark);
+	border-radius: 16px;
+	padding: var(--spacing-xl);
+	margin-top: calc(var(--header-height) + 24px);
+	box-shadow: 0 0 0 1px rgba(255,255,255,0.03) inset, 0 12px 30px rgba(0,0,0,0.4);
+}
+
+.title {
+	font-size: 2rem;
+	margin-bottom: var(--spacing-xs);
+}
+
+.subtitle {
+	color: var(--text-muted);
+	margin-bottom: var(--spacing-lg);
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-lg);
+}
+
+.fieldGroup {
+	display: grid;
+	grid-template-columns: 1fr 280px;
+	gap: var(--spacing-lg);
+}
+
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.label {
+	font-size: 0.9rem;
+	color: var(--text-muted);
+}
+
+.input {
+	background: var(--bg-primary);
+	color: var(--text-primary);
+	border: 1px solid var(--border-dark);
+	border-radius: 10px;
+	padding: 0.9rem 1rem;
+}
+
+.input::placeholder {
+	color: #8a8a8a;
+}
+
+.phoneGroup {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 8px;
+	align-items: center;
+}
+
+.phonePrefix {
+	background: var(--bg-primary);
+	color: var(--text-primary);
+	border: 1px solid var(--border-dark);
+	border-radius: 10px;
+	padding: 0.7rem 0.9rem;
+	white-space: nowrap;
+	pointer-events: none;
+}
+
+.phoneInput {
+	width: 100%;
+}
+
+.membersWrapper {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--spacing-lg);
+}
+
+.memberCard {
+	border: 1px dashed var(--border-dark);
+	border-radius: 12px;
+	padding: var(--spacing-lg);
+	background: rgba(255,255,255,0.02);
+}
+
+.memberTitle {
+	font-size: 1.1rem;
+	margin-bottom: var(--spacing-md);
+}
+
+.memberGrid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: var(--spacing-lg);
+}
+
+.actions {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.submit {
+	background: var(--accent-rose);
+	color: #fff;
+	border-radius: 10px;
+	padding: 0.9rem 1.25rem;
+	transition: transform 120ms ease, filter 120ms ease;
+}
+
+.submit:hover {
+	filter: brightness(1.05);
+	transform: translateY(-1px);
+}
+
+.submit:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.error {
+	color: #ff7b7b;
+	background: rgba(255, 30, 86, 0.08);
+	border: 1px solid rgba(255, 30, 86, 0.4);
+	padding: 0.75rem 1rem;
+	border-radius: 10px;
+}
+
+.success {
+	color: #7bffb3;
+	background: rgba(30, 255, 155, 0.08);
+	border: 1px solid rgba(30, 255, 155, 0.4);
+	padding: 0.75rem 1rem;
+	border-radius: 10px;
+}
+
+/* Custom dropdown */
+.dropdown {
+	position: relative;
+}
+
+.dropdownButton {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	background: var(--bg-primary);
+	color: var(--text-primary);
+	border: 1px solid var(--border-dark);
+	border-radius: 10px;
+	padding: 0.9rem 1rem;
+}
+
+.chevron {
+	margin-left: 0.5rem;
+	opacity: 0.8;
+}
+
+.dropdownList {
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 0;
+	right: 0;
+	background: var(--bg-primary);
+	border: 1px solid var(--border-dark);
+	border-radius: 10px;
+	overflow: hidden;
+	max-height: 240px;
+	overflow-y: auto;
+	z-index: 10;
+}
+
+.dropdownItem {
+	display: block;
+	width: 100%;
+	text-align: left;
+	padding: 0.8rem 1rem;
+	color: var(--text-primary);
+}
+
+.dropdownItem:hover, .dropdownItemActive {
+	background: rgba(255, 30, 86, 0.1);
+}
+
+/* Payment section */
+.paymentSection {
+	margin-top: var(--spacing-lg);
+	padding-top: var(--spacing-lg);
+	border-top: 1px solid var(--border-dark);
+}
+
+.paymentTitle {
+	font-size: 1.25rem;
+	margin-bottom: var(--spacing-md);
+}
+
+.paymentGrid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--spacing-lg);
+}
+
+.fileInputWrap {
+	position: relative;
+}
+
+.visuallyHidden {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.filePicker {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: 10px;
+}
+
+.fileButton {
+	background: var(--accent-rose);
+	color: #fff;
+	border-radius: 10px;
+	padding: 0.7rem 0.9rem;
+}
+
+.fileName {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: var(--text-muted);
+}
+
+.fileRemove {
+	background: transparent;
+	color: var(--text-muted);
+	border: 1px solid var(--border-dark);
+	border-radius: 10px;
+	padding: 0.6rem 0.75rem;
+}
+
+.helper {
+	display: inline-block;
+	color: var(--text-muted);
+	font-size: 0.85rem;
+	margin-top: 6px;
+}
+
+.previewBox {
+	margin-top: 10px;
+	border: 1px dashed var(--border-dark);
+	border-radius: 10px;
+	padding: 8px;
+	background: rgba(255,255,255,0.02);
+}
+
+.previewImg {
+	display: block;
+	max-width: 100%;
+	border-radius: 8px;
+}
+
+@media (max-width: 800px) {
+	.fieldGroup {
+		grid-template-columns: 1fr;
+	}
+	.memberGrid {
+		grid-template-columns: 1fr;
+	}
+	.paymentGrid {
+		grid-template-columns: 1fr;
+	}
+	.card {
+		padding: var(--spacing-lg);
+	}
+}
+
+@media (max-width: 600px) {
+	.main {
+		padding: var(--spacing-lg) var(--spacing-sm);
+	}
+	.card {
+		border-radius: 12px;
+		margin-top: calc(var(--header-height) + 16px);
+	}
+
+    .memberCard{
+        background-color: transparent;
+        padding:0;
+        border:none;
+    }
+
+	.title {
+		font-size: 1.5rem;
+	}
+	.subtitle {
+		font-size: 0.95rem;
+	}
+	.submit {
+		width: 100%;
+	}
+
+	.phoneGroup {
+		grid-template-columns: auto 1fr;
+		gap: 6px;
+	}
+}
+
+@media (max-width: 380px) {
+	.input,
+	.dropdownButton {
+		padding: 0.8rem 0.9rem;
+	}
+	.title {
+		font-size: 1.35rem;
+	}
+}

@@ -1,27 +1,405 @@
+import { useEffect, useMemo, useRef, useState } from "react";
 import Header from "../../components/Header";
 import Background from "../../components/Background";
 import Footer from "../../components/Footer";
+import styles from "./Register.module.css";
+
+type Gender = "male" | "female" | "";
+
+type Member = {
+  name: string;
+  email: string;
+  phone: string;
+  gender: Gender;
+};
+
+type Option<T = string | number> = {
+  label: string;
+  value: T;
+};
+
+function useOutsideClick(ref: React.RefObject<HTMLElement>, onOutside: () => void) {
+  useEffect(() => {
+    function handle(e: MouseEvent) {
+      if (!ref.current) return;
+      if (!ref.current.contains(e.target as Node)) onOutside();
+    }
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [ref, onOutside]);
+}
+
+function CustomDropdown<T extends string | number>({
+  label,
+  options,
+  value,
+  onChange,
+  placeholder,
+  className,
+}: {
+  label?: string;
+  options: Option<T>[];
+  value: T | undefined;
+  onChange: (v: T) => void;
+  placeholder?: string;
+  className?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useMemo(() => ({ current: null as unknown as HTMLElement }), []);
+  useOutsideClick(ref as unknown as React.RefObject<HTMLElement>, () => setOpen(false));
+
+  const selected = options.find((o) => o.value === value);
+
+  return (
+    <div className={`${styles.dropdown} ${className ?? ""}`} ref={ref as any}>
+      {label && (
+        <label className={styles.label}>
+          {label}
+        </label>
+      )}
+      <button
+        type="button"
+        className={styles.dropdownButton}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span>{selected ? selected.label : (placeholder ?? "Select")}</span>
+        <span className={styles.chevron} aria-hidden>
+          ▾
+        </span>
+      </button>
+      {open && (
+        <ul className={styles.dropdownList} role="listbox">
+          {options.map((opt) => (
+            <li key={String(opt.value)} role="option">
+              <button
+                type="button"
+                className={`${styles.dropdownItem} ${opt.value === value ? styles.dropdownItemActive : ""}`}
+                onClick={() => {
+                  onChange(opt.value);
+                  setOpen(false);
+                }}
+              >
+                {opt.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
 
 export default function RegisterPage() {
+  const [teamName, setTeamName] = useState("");
+  const [count, setCount] = useState<1 | 2>(1);
+  const [members, setMembers] = useState<Member[]>([
+    { name: "", email: "", phone: "", gender: "" },
+  ]);
+  const [transactionId, setTransactionId] = useState("");
+  const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
+  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    setMembers((prev) => {
+      if (count === 1) return prev.slice(0, 1);
+      if (prev.length === 2) return prev;
+      return [...prev, { name: "", email: "", phone: "", gender: "" }];
+    });
+  }, [count]);
+
+  const memberOptions: Option<1 | 2>[] = [
+    { label: "Individual", value: 1 },
+    { label: "2", value: 2 },
+  ];
+
+  const genderOptions: Option<Gender>[] = [
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+  ];
+
+  function updateMember(idx: number, patch: Partial<Member>) {
+    setMembers((prev) => prev.map((m, i) => (i === idx ? { ...m, ...patch } : m)));
+  }
+
+  function sanitizePhoneInput(value: string) {
+    // Keep digits only; cap to 10 digits for Indian numbers
+    return value.replace(/\D/g, "").slice(0, 10);
+  }
+
+  function onScreenshotChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] ?? null;
+    if (!file) {
+      setScreenshotFile(null);
+      setScreenshotPreview(null);
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      setError("Please upload an image file.");
+      setScreenshotFile(null);
+      setScreenshotPreview(null);
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image must be under 5MB.");
+      setScreenshotFile(null);
+      setScreenshotPreview(null);
+      return;
+    }
+    setError(null);
+    setScreenshotFile(file);
+    const url = URL.createObjectURL(file);
+    setScreenshotPreview(url);
+  }
+
+  function onOpenFileDialog() {
+    fileInputRef.current?.click();
+  }
+
+  function clearScreenshot() {
+    if (screenshotPreview) URL.revokeObjectURL(screenshotPreview);
+    setScreenshotFile(null);
+    setScreenshotPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  useEffect(() => {
+    return () => {
+      if (screenshotPreview) URL.revokeObjectURL(screenshotPreview);
+    };
+  }, [screenshotPreview]);
+
+  function validate(): string | null {
+    if (!teamName.trim()) return "Please enter a team name.";
+    for (let i = 0; i < members.length; i++) {
+      const m = members[i];
+      if (!m.name.trim() || !m.email.trim() || !m.phone.trim()) {
+        return `Please fill all required fields for member ${i + 1}.`;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m.email)) {
+        return `Please enter a valid email for member ${i + 1}.`;
+      }
+      if (!/^\d{10}$/.test(m.phone)) {
+        return `Phone for member ${i + 1} must be 10 digits.`;
+      }
+      if (m.gender !== "male" && m.gender !== "female") {
+        return `Please select gender for member ${i + 1}.`;
+      }
+    }
+    if (!transactionId.trim()) {
+      return "Please enter the payment transaction ID.";
+    }
+    if (!screenshotFile) {
+      return "Please upload the payment screenshot image.";
+    }
+    return null;
+  }
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+    const v = validate();
+    if (v) {
+      setError(v);
+      return;
+    }
+    setSubmitting(true);
+    try {
+      // TODO: integrate with backend or form service
+      const payload = {
+        teamName,
+        membersCount: count,
+        members: members.map((m) => ({
+          ...m,
+          phone: `+91${m.phone}`,
+        })),
+        payment: {
+          transactionId,
+          screenshot: screenshotFile
+            ? { name: screenshotFile.name, size: screenshotFile.size, type: screenshotFile.type }
+            : null,
+        },
+        timestamp: new Date().toISOString(),
+      };
+      // For now, just log the data
+      // eslint-disable-next-line no-console
+      console.log("Registration payload", payload);
+      setSuccess("Registration data prepared. Integrate submission backend next.");
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <>
       <Header />
       <Background />
-      <main style={{
-        minHeight: "60vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "4rem 1rem",
-        color: "#fff",
-        textAlign: "center",
-      }}>
-        <div>
-          <h1 style={{ fontSize: "2.25rem", marginBottom: "0.75rem" }}>Register</h1>
-          <p style={{ opacity: 0.9 }}>
-            Registration page placeholder. We’ll add the actual form and link this page from the site.
-          </p>
-        </div>
+      <main className={styles.main}>
+        <section className={styles.card}>
+          <h1 className={styles.title}>Team Registration</h1>
+          <p className={styles.subtitle}>Register as an individual or a team of two.</p>
+
+          <form className={styles.form} onSubmit={onSubmit}>
+            <div className={styles.fieldGroup}>
+              <div className={styles.field}>
+                <label htmlFor="teamName" className={styles.label}>Team Name</label>
+                <input
+                  id="teamName"
+                  className={styles.input}
+                  type="text"
+                  placeholder="Enter your team name"
+                  value={teamName}
+                  onChange={(e) => setTeamName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <CustomDropdown<1 | 2>
+                label="Number of Members"
+                options={memberOptions}
+                value={count}
+                onChange={(v) => setCount(v)}
+                placeholder="Select count"
+                className={styles.field}
+              />
+            </div>
+
+            <div className={styles.membersWrapper}>
+              {members.map((m, idx) => (
+                <div key={idx} className={styles.memberCard}>
+                  <h3 className={styles.memberTitle}>Member {idx + 1}</h3>
+                  <div className={styles.memberGrid}>
+                    <div className={styles.field}>
+                      <label className={styles.label} htmlFor={`name-${idx}`}>Name</label>
+                      <input
+                        id={`name-${idx}`}
+                        className={styles.input}
+                        type="text"
+                        placeholder="Full name"
+                        value={m.name}
+                        onChange={(e) => updateMember(idx, { name: e.target.value })}
+                        required
+                      />
+                    </div>
+
+                    <div className={styles.field}>
+                      <label className={styles.label} htmlFor={`email-${idx}`}>Email</label>
+                      <input
+                        id={`email-${idx}`}
+                        className={styles.input}
+                        type="email"
+                        placeholder="name@example.com"
+                        value={m.email}
+                        onChange={(e) => updateMember(idx, { email: e.target.value })}
+                        required
+                      />
+                    </div>
+
+                    <div className={styles.field}>
+                      <label className={styles.label} htmlFor={`phone-${idx}`}>Phone (+91)</label>
+                      <div className={styles.phoneGroup}>
+                        <span className={styles.phonePrefix}>+91</span>
+                        <input
+                          id={`phone-${idx}`}
+                          className={`${styles.input} ${styles.phoneInput}`}
+                          type="tel"
+                          inputMode="numeric"
+                          maxLength={10}
+                          placeholder="10-digit number"
+                          value={m.phone}
+                          onChange={(e) => updateMember(idx, { phone: sanitizePhoneInput(e.target.value) })}
+                          required
+                          title="Enter 10-digit Indian mobile number"
+                        />
+                      </div>
+                    </div>
+
+                    <CustomDropdown<Gender>
+                      label="Gender"
+                      options={genderOptions}
+                      value={m.gender}
+                      onChange={(v) => updateMember(idx, { gender: v })}
+                      placeholder="Select gender"
+                      className={styles.field}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <section className={styles.paymentSection}>
+              <h3 className={styles.paymentTitle}>Payment</h3>
+              <div className={styles.paymentGrid}>
+                <div className={styles.field}>
+                  <label className={styles.label} htmlFor="transactionId">Transaction ID</label>
+                  <input
+                    id="transactionId"
+                    className={styles.input}
+                    type="text"
+                    placeholder="Enter transaction/reference ID"
+                    value={transactionId}
+                    onChange={(e) => setTransactionId(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className={styles.field}>
+                  <label className={styles.label} htmlFor="screenshot">Payment Screenshot</label>
+                  <div className={styles.fileInputWrap}>
+                    <input
+                      id="screenshot"
+                      ref={fileInputRef}
+                      className={styles.visuallyHidden}
+                      type="file"
+                      accept="image/*"
+                      onChange={onScreenshotChange}
+                    />
+                    <div className={styles.filePicker}>
+                      <button
+                        type="button"
+                        className={styles.fileButton}
+                        onClick={onOpenFileDialog}
+                      >
+                        {screenshotFile ? "Change image" : "Select image"}
+                      </button>
+                      <span className={styles.fileName}>
+                        {screenshotFile ? screenshotFile.name : "No file selected"}
+                      </span>
+                      {screenshotFile && (
+                        <button type="button" className={styles.fileRemove} onClick={clearScreenshot}>
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  {screenshotPreview && (
+                    <div className={styles.previewBox}>
+                      <img src={screenshotPreview} alt="Payment screenshot preview" className={styles.previewImg} />
+                    </div>
+                  )}
+                  <span className={styles.helper}>Accepted: image files up to 5MB.</span>
+                </div>
+              </div>
+            </section>
+
+            {error && <div className={styles.error}>{error}</div>}
+            {success && <div className={styles.success}>{success}</div>}
+
+            <div className={styles.actions}>
+              <button className={styles.submit} type="submit" disabled={submitting}>
+                {submitting ? "Submitting..." : "Submit"}
+              </button>
+            </div>
+          </form>
+        </section>
       </main>
       <Footer isNotRegisterPage={false} />
     </>
