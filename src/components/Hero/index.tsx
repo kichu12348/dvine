@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import styles from "./Hero.module.css";
 import gsap from "gsap";
+import { useNavigate } from "react-router-dom";
 
 interface HeroProps {
   onRegisterClick?: () => void;
@@ -12,6 +13,8 @@ export function Hero({ onRegisterClick }: HeroProps) {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const countdownRef = useRef<HTMLDivElement>(null);
+
+  const navigate = useNavigate();
 
   // Countdown state
   const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft());
@@ -205,7 +208,7 @@ export function Hero({ onRegisterClick }: HeroProps) {
 
   const handleRegisterClick = () => {
     if (onRegisterClick) {
-      onRegisterClick();
+      navigate("/register");
     } else {
       console.log("Register clicked!");
     }
@@ -260,15 +263,14 @@ export function Hero({ onRegisterClick }: HeroProps) {
             <div className={styles.countdownEnded}>Event Started!</div>
           )}
         </div>
-        {timeLeft.total <= 0 && (
-          <button
-            ref={btnRef}
-            className={styles.registerBtn}
-            onClick={handleRegisterClick}
-          >
-            Register Now
-          </button>
-        )}
+
+        <button
+          ref={btnRef}
+          className={styles.registerBtn}
+          onClick={handleRegisterClick}
+        >
+          Register Now
+        </button>
       </div>
     </div>
   );

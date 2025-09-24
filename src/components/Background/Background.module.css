@@ -63,11 +63,132 @@
   right: 0;
   bottom: 0;
   background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, rgba(225, 29, 72, 0.03) 1px, transparent 1px),
+  background-image: linear-gradient(
+      to right,
+      rgba(225, 29, 72, 0.03) 1px,
+      transparent 1px
+    ),
     linear-gradient(to bottom, rgba(225, 29, 72, 0.03) 1px, transparent 1px);
   opacity: 0.4;
   z-index: -5;
+}
+
+/* Bubbles (half visible) */
+.bubble {
+  position: absolute;
+  width: 520px; /* base size; can be overridden with modifier */
+  height: 520px;
+  image-rendering: pixelated;
+  /* Base offsets supplied per side via --base-x / --base-y */
+  --base-x: 0%;
+  --base-y: 0%;
+  transform: translate3d(
+    var(--base-x),
+    calc(var(--base-y) + var(--parallax-y, 0px)),
+    0
+  );
+  will-change: transform;
+  filter: drop-shadow(0 0 40px rgba(225, 29, 72, 0.25));
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: -3;
+  animation: gentleRotate 38s linear infinite;
+  backface-visibility: hidden;
+  contain: layout style paint;
+}
+
+/* Left bubble: only right half visible */
+.bubbleLeft {
+  background: url("/assets/bubble-left.svg") center/contain no-repeat;
+  left: 0;
+  top: 35%;
+  transform-origin: center left;
+  --base-x: -55%;
+  --base-y: -50%;
+}
+
+/* Right bubble: only left half visible */
+.bubbleRight {
+  background: url("/assets/bubble-right.svg") center/contain no-repeat;
+  right: 0;
+  top: 65%;
+  transform-origin: center right;
+  --base-x: 55%;
+  --base-y: -50%;
+  animation-duration: 46s; /* slight variation */
+  animation-direction: reverse; /* contrast rotation */
+}
+
+@keyframes gentleRotate {
+  0% {
+    rotate: 0deg;
+  }
+  50% {
+    rotate: 2deg;
+  }
+  100% {
+    rotate: 0deg;
+  }
+}
+
+/* Variation sizes for responsiveness */
+@media (max-width: 1200px) {
+  .bubble {
+    width: 420px;
+    height: 420px;
+  }
+  .bubbleLeft {
+    --base-x: -60%;
+  }
+  .bubbleRight {
+    --base-x: 60%;
+  }
+}
+
+@media (max-width: 900px) {
+  .bubble {
+    width: 340px;
+    height: 340px;
+  }
+  .bubbleLeft {
+    --base-x: -60%;
+  }
+  .bubbleRight {
+    --base-x: 60%;
+  }
+}
+
+@media (max-width: 600px) {
+  .bubble {
+    width: 270px;
+    height: 270px;
+    opacity: 0.58;
+  }
+  .bubbleLeft {
+    --base-x: -52%;
+    top: 41%;
+  }
+  .bubbleRight {
+    --base-x: 52%;
+    top: 59%;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 480px) {
+  .bubble {
+    width: 250px;
+    height: 250px;
+    opacity: 0.55;
+  }
+  .bubbleLeft {
+    --base-x: -50%;
+    top: 42%;
+  }
+  .bubbleRight {
+    --base-x: 50%;
+    top: 58%;
+  }
 }
 
 /* Floating icons */
@@ -100,5 +221,53 @@
 @media (max-width: 768px) {
   .grid {
     background-size: 25px 25px;
+  }
+}
+
+/* Stars */
+.star {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: url("/assets/star.svg") center/contain no-repeat;
+  image-rendering: pixelated;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.25));
+  will-change: transform;
+  z-index: -2; /* in front of grid, behind bubbles */
+  animation: starPulse 6s ease-in-out infinite;
+  backface-visibility: hidden;
+  contain: layout paint;
+}
+
+.star[data-size="xs"] {
+  width: 8px;
+  height: 8px;
+  animation-duration: 5s;
+}
+.star[data-size="sm"] {
+  width: 12px;
+  height: 12px;
+}
+.star[data-size="md"] {
+  width: 16px;
+  height: 16px;
+  animation-duration: 7s;
+}
+.star[data-size="lg"] {
+  width: 22px;
+  height: 22px;
+  animation-duration: 8s;
+}
+
+@keyframes starPulse {
+  0%,
+  100% {
+    opacity: 0.75;
+    scale: 1;
+  }
+  50% {
+    opacity: 1;
+    scale: 1.15;
   }
 }

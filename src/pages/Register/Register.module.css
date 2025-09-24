@@ -20,20 +20,22 @@
 	max-width: 960px;
 	background: var(--bg-secondary);
 	border: 1px solid var(--border-dark);
-	border-radius: 16px;
+	
 	padding: var(--spacing-xl);
 	margin-top: calc(var(--header-height) + 24px);
 	box-shadow: 0 0 0 1px rgba(255,255,255,0.03) inset, 0 12px 30px rgba(0,0,0,0.4);
 }
 
 .title {
-	font-size: 2rem;
+	font-size: 3rem;
 	margin-bottom: var(--spacing-xs);
+	font-family: var(--font-body);
 }
 
 .subtitle {
 	color: var(--text-muted);
 	margin-bottom: var(--spacing-lg);
+	font-size: 1.2rem;
 }
 
 .form {
@@ -55,7 +57,7 @@
 }
 
 .label {
-	font-size: 0.9rem;
+	font-size: 1.1rem;
 	color: var(--text-muted);
 }
 
@@ -63,8 +65,9 @@
 	background: var(--bg-primary);
 	color: var(--text-primary);
 	border: 1px solid var(--border-dark);
-	border-radius: 10px;
+	
 	padding: 0.9rem 1rem;
+	font-size: 1.1rem;
 }
 
 .input::placeholder {
@@ -82,7 +85,7 @@
 	background: var(--bg-primary);
 	color: var(--text-primary);
 	border: 1px solid var(--border-dark);
-	border-radius: 10px;
+	
 	padding: 0.7rem 0.9rem;
 	white-space: nowrap;
 	pointer-events: none;
@@ -100,14 +103,15 @@
 
 .memberCard {
 	border: 1px dashed var(--border-dark);
-	border-radius: 12px;
+	
 	padding: var(--spacing-lg);
 	background: rgba(255,255,255,0.02);
 }
 
 .memberTitle {
-	font-size: 1.1rem;
+	font-size: 1.4rem;
 	margin-bottom: var(--spacing-md);
+	font-family: var(--font-body);
 }
 
 .memberGrid {
@@ -124,9 +128,10 @@
 .submit {
 	background: var(--accent-rose);
 	color: #fff;
-	border-radius: 10px;
+	
 	padding: 0.9rem 1.25rem;
 	transition: transform 120ms ease, filter 120ms ease;
+	font-size: 1.2rem;
 }
 
 .submit:hover {
@@ -144,7 +149,8 @@
 	background: rgba(255, 30, 86, 0.08);
 	border: 1px solid rgba(255, 30, 86, 0.4);
 	padding: 0.75rem 1rem;
-	border-radius: 10px;
+	
+	font-size: 1.1rem;
 }
 
 .success {
@@ -152,7 +158,8 @@
 	background: rgba(30, 255, 155, 0.08);
 	border: 1px solid rgba(30, 255, 155, 0.4);
 	padding: 0.75rem 1rem;
-	border-radius: 10px;
+	
+	font-size: 1.1rem;
 }
 
 /* Custom dropdown */
@@ -168,8 +175,8 @@
 	background: var(--bg-primary);
 	color: var(--text-primary);
 	border: 1px solid var(--border-dark);
-	border-radius: 10px;
 	padding: 0.9rem 1rem;
+	font-size: 1.1rem;
 }
 
 .chevron {
@@ -184,7 +191,6 @@
 	right: 0;
 	background: var(--bg-primary);
 	border: 1px solid var(--border-dark);
-	border-radius: 10px;
 	overflow: hidden;
 	max-height: 240px;
 	overflow-y: auto;
@@ -197,6 +203,7 @@
 	text-align: left;
 	padding: 0.8rem 1rem;
 	color: var(--text-primary);
+	font-size: 1.1rem;
 }
 
 .dropdownItem:hover, .dropdownItemActive {
@@ -211,7 +218,7 @@
 }
 
 .paymentTitle {
-	font-size: 1.25rem;
+	font-size: 1.8rem;
 	margin-bottom: var(--spacing-md);
 }
 
@@ -219,6 +226,7 @@
 	color: var(--accent-rose-light);
 	margin-top: -6px;
 	margin-bottom: var(--spacing-md);
+	font-size: 1.2rem;
 }
 
 .upiBlock {
@@ -231,7 +239,6 @@
 
 .qrWrap {
 	border: 1px solid var(--border-dark);
-	border-radius: 12px;
 	background: rgba(255,255,255,0.02);
 	padding: 12px;
 }
@@ -240,7 +247,6 @@
 	display: block;
 	width: 100%;
 	height: auto;
-	border-radius: 8px;
 }
 
 
@@ -253,7 +259,6 @@
     justify-content: center;
 	padding: 10px 12px;
 	border: 1px dashed var(--border-dark);
-	border-radius: 10px;
 	background: rgba(255,255,255,0.02);
 	margin-bottom: 8px;
     width: fit-content;
@@ -268,15 +273,15 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-    font-family: "Inter, sans-serif";
+    font-family: monospace;
     letter-spacing: 0.02em;
+	font-size: 1.1rem;
 }
 
 .copyBtn {
 	background: transparent;
 	color: var(--text-primary);
 	border: 1px solid var(--border-dark);
-	border-radius: 8px;
 	padding: 0.5rem 0.75rem;
 }
 
@@ -312,8 +317,8 @@
 .fileButton {
 	background: var(--accent-rose);
 	color: #fff;
-	border-radius: 10px;
 	padding: 0.7rem 0.9rem;
+	font-size: 1rem;
 }
 
 .fileName {
@@ -328,21 +333,21 @@
 	background: transparent;
 	color: var(--text-muted);
 	border: 1px solid var(--border-dark);
-	border-radius: 10px;
+	
 	padding: 0.6rem 0.75rem;
 }
 
 .helper {
 	display: inline-block;
 	color: var(--text-muted);
-	font-size: 0.85rem;
+	font-size: 1rem;
 	margin-top: 6px;
 }
 
 .previewBox {
 	margin-top: 10px;
 	border: 1px dashed var(--border-dark);
-	border-radius: 10px;
+	
 	padding: 8px;
 	background: rgba(255,255,255,0.02);
 }
@@ -350,7 +355,7 @@
 .previewImg {
 	display: block;
 	max-width: 100%;
-	border-radius: 8px;
+	
 }
 
 @media (max-width: 800px) {
@@ -376,7 +381,7 @@
 		padding: var(--spacing-lg) var(--spacing-sm);
 	}
 	.card {
-		border-radius: 12px;
+		
 		margin-top: calc(var(--header-height) + 16px);
 	}
 

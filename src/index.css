@@ -1,3 +1,13 @@
+@font-face {
+  font-family: "PixelType";
+  src: url("/fonts/PixelType.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Owners";
+  src: url("/fonts/Owners.ttf") format("truetype");
+}
+
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -26,14 +36,18 @@
   --spacing-xl: 3rem;
   
   /* Fonts */
-  --font-heading: 'Press Start 2P', monospace, sans-serif;
-  --font-body: var(--font-heading);
+  --font-heading: "Owners", sans-serif;
+  --font-body: "PixelType", monospace;
   
   /* Component sizes */
   --progress-width-desktop: 320px;
   --progress-width-tablet: 250px;
   --progress-width-mobile: 200px;
   --progress-height: 24px;
+
+  /* blur*/
+
+  --general-blur: blur(2px);
 }
 
 /* Base Styles */

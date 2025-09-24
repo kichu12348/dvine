@@ -3,14 +3,12 @@ import styles from "./Footer.module.css";
 import gsap from "gsap";
 import {
   FaInstagram,
-  //   FaLinkedin,
-  //   FaGithub,
-  //   FaTwitter,
   FaMapMarkerAlt,
   FaEnvelope,
   FaHeart,
   FaCalendarAlt,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Footer({
   isNotRegisterPage = true,
@@ -68,7 +66,7 @@ export default function Footer({
           <div className={styles.section}>
             <h3 className={styles.title}>D'VINE</h3>
             <p className={styles.description}>
-              An 18-hour UI/UX design hackathon by IEEE SB CEC and IEDC BOOTCAMP
+              An 18-hour UI/UX design hackathon by IEDC BOOTCAMP CEC and IEEE SB
               CEC.
             </p>
             <div className={styles.contact}>
@@ -82,7 +80,7 @@ export default function Footer({
               </span>
               <span className={styles.contactItem}>
                 <FaEnvelope aria-hidden className={styles.contactIcon} />
-                contact@dvine.dev
+                dvineofficial25@gmail.com
               </span>
             </div>
           </div>
@@ -116,6 +114,14 @@ export default function Footer({
                     FAQ
                   </a>
                 </li>
+                <li>
+                  <Link
+                    to="/register"
+                    className={[styles.link, styles.linkRegister].join(" ")}
+                  >
+                    Register
+                  </Link>
+                </li>
               </ul>
             </div>
           )}
@@ -124,8 +130,8 @@ export default function Footer({
           <div className={styles.section}>
             <h4 className={styles.sectionTitle}>Organized By</h4>
             <div className={styles.orgList}>
-              <span className={styles.org}>IEEE SB CEC</span>
               <span className={styles.org}>IEDC BOOTCAMP CEC</span>
+              <span className={styles.org}>IEEE SB CEC</span>
             </div>
           </div>
 
@@ -169,6 +175,7 @@ export default function Footer({
           </div>
         </div>
       </div>
+      <img src="/assets/left-semi.svg" alt="" className={styles.leftDeco} />
     </footer>
   );
 }

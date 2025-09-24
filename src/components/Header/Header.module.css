@@ -8,54 +8,127 @@
   background: linear-gradient(to bottom, var(--bg-primary) 0%, rgba(13, 13, 13, 0.5) 70%, transparent 100%);
   height: var(--header-height);
   pointer-events: none;
+  text-decoration: none;
 }
 
-.logoContainer {
+.headerContent {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: var(--spacing-md);
   max-width: 1200px;
   margin: 0 auto;
-  flex-wrap: wrap;
-  pointer-events: auto; 
-}
-
-.logo {
-  height: 40px;
-  width: auto;
-  object-fit: contain;
-  transition: opacity 0.3s, transform 0.3s;
-  opacity: 0; 
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  height: 100%;
+  padding: 0 var(--spacing-md);
   pointer-events: auto;
 }
 
-.logo:hover {
-  opacity: 1;
+.logoSection {
+  display: flex;
+  align-items: center;
+}
+
+.dvineTitle {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  display: flex;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.dvineTitle:hover {
+  transform: scale(1.05);
+}
+
+.dvineD {
+  color: var(--accent-rose);
+  text-shadow: 0 0 6px rgba(225, 29, 72, 0.4), 0 0 12px rgba(225, 29, 72, 0.2),
+    3px 3px 0px var(--bg-secondary), 6px 6px 0px var(--bg-primary);
+}
+
+.dvineVine {
+  color: var(--text-primary);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.4),
+    0 0 12px rgba(255, 255, 255, 0.2), 3px 3px 0px var(--bg-secondary),
+    6px 6px 0px var(--bg-primary);
+}
+
+.buttonSection {
+  display: flex;
+  align-items: center;
+}
+
+.registerBtn {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  background-color: var(--accent-rose);
+  color: var(--text-primary);
+  border: none;
+  padding: 0.7rem 1.5rem;
+  cursor: pointer;
+  position: relative;
+  letter-spacing: 0.1em;
+  box-shadow: 0 0 6px rgba(225, 29, 72, 0.3), 3px 3px 0 var(--bg-secondary);
+  transition: all 0.2s ease;
+  transform: translateY(0);
+  text-transform: uppercase;
+  text-emphasis: none;
+}
+
+.registerBtn:hover {
   transform: translateY(-2px);
+  box-shadow: 0 0 8px rgba(225, 29, 72, 0.4), 4px 4px 0 var(--bg-secondary);
+}
+
+.registerBtn:active {
+  transform: translateY(1px);
+  box-shadow: 0 0 4px rgba(225, 29, 72, 0.3), 2px 2px 0 var(--bg-secondary);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .header { padding: var(--spacing-xs) var(--spacing-sm); }
-
-  .logoContainer {
-    gap: var(--spacing-sm);
+  .header { 
+    padding: var(--spacing-xs) var(--spacing-sm); 
   }
 
-  .logo {
-    height: 32px;
+  .headerContent {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .dvineTitle {
+    font-size: 2rem;
+  }
+
+  .registerBtn {
+    font-size: 1rem;
+    padding: 0.6rem 1.2rem;
   }
 }
 
 @media (max-width: 480px) {
-  .logoContainer {
-    gap: var(--spacing-xs);
-    justify-content: space-around;
+  .headerContent {
+    padding: 0 var(--spacing-xs);
   }
 
-  .logo {
-    height: 24px;
+  .dvineTitle {
+    font-size: 1.6rem;
+  }
+
+  .dvineD {
+    text-shadow: 0 0 4px rgba(225, 29, 72, 0.4), 0 0 8px rgba(225, 29, 72, 0.2),
+      2px 2px 0px var(--bg-secondary), 4px 4px 0px var(--bg-primary);
+  }
+
+  .dvineVine {
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.4),
+      0 0 8px rgba(255, 255, 255, 0.2), 2px 2px 0px var(--bg-secondary),
+      4px 4px 0px var(--bg-primary);
+  }
+
+  .registerBtn {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
   }
 }

@@ -3,6 +3,9 @@ import Header from "../../components/Header";
 import Background from "../../components/Background";
 import Footer from "../../components/Footer";
 import styles from "./Register.module.css";
+import axios from "axios";
+
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
 type Gender = "male" | "female" | "";
 
@@ -109,7 +112,38 @@ export default function RegisterPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const upiId = "christopiusofficial@okicici";
+  const [college, setCollege] = useState("");
+  const [userUpiId, setUserUpiId] = useState("");
+  const upiId = "sanjeevsnair1412@okicici";
+
+  const [registrationsClosed, setRegistrationsClosed] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkRegistrationStatus = async () => {
+      try {
+        const response = await axios.get("/total-registrations");
+        if (response.status !== 200) {
+          throw new Error("Could not fetch registration count.");
+        }
+        const data = response.data as { count: number };
+        // Close registration if count is 40 or more
+        if (data.count >= 40) {
+          setRegistrationsClosed(true);
+        }
+      } catch (err) {
+        console.error(err);
+        // Display an error if the API call fails
+        setError(
+          "Could not verify registration status. Please try again later."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkRegistrationStatus();
+  }, []);
 
   useEffect(() => {
     setMembers((prev) => {
@@ -183,7 +217,9 @@ export default function RegisterPage() {
   }, [screenshotPreview]);
 
   function validate(): string | null {
+    if (!college.trim()) return "Please enter your college name.";
     if (!teamName.trim()) return "Please enter a team name.";
+    if (!userUpiId.trim()) return "Please enter your UPI ID.";
     for (let i = 0; i < members.length; i++) {
       const m = members[i];
       if (!m.name.trim() || !m.email.trim() || !m.phone.trim()) {
@@ -199,11 +235,8 @@ export default function RegisterPage() {
         return `Please select gender for member ${i + 1}.`;
       }
     }
-    if (!transactionId.trim()) {
-      return "Please enter the payment transaction ID.";
-    }
-    if (!screenshotFile) {
-      return "Please upload the payment screenshot image.";
+    if (!transactionId.trim() && !screenshotFile) {
+      return "Please provide either a transaction ID or upload a payment screenshot.";
     }
     return null;
   }
@@ -212,43 +245,68 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+
+    if (registrationsClosed) {
+      setError("Registrations are currently closed.");
+      return;
+    }
+
     const v = validate();
     if (v) {
       setError(v);
       return;
     }
     setSubmitting(true);
+
     try {
-      // TODO: integrate with backend or form service
-      const payload = {
-        teamName,
-        membersCount: count,
-        members: members.map((m) => ({
-          ...m,
-          phone: `+91${m.phone}`,
-        })),
-        payment: {
-          transactionId,
-          amount: 250,
-          currency: "INR",
-          screenshot: screenshotFile
-            ? {
-                name: screenshotFile.name,
-                size: screenshotFile.size,
-                type: screenshotFile.type,
-              }
-            : null,
+      const apiFormData = new FormData();
+
+      // Append main team details
+      apiFormData.append("teamName", teamName);
+      apiFormData.append("teamSize", String(count));
+      apiFormData.append("college", college);
+      apiFormData.append("upiId", userUpiId);
+
+      // Append payment details
+      apiFormData.append("transactionId", transactionId);
+      if (screenshotFile) {
+        apiFormData.append("paymentScreenshot", screenshotFile);
+      }
+
+      // Append each member's data in a format the backend can parse
+      members.forEach((member, index) => {
+        apiFormData.append(`users[${index}][name]`, member.name);
+        apiFormData.append(`users[${index}][email]`, member.email);
+        // The backend expects the full phone number with country code
+        apiFormData.append(`users[${index}][phone]`, `+91${member.phone}`);
+        apiFormData.append(`users[${index}][gender]`, member.gender);
+      });
+
+      // Make the API call to the backend
+      const response = await axios.post("/register", apiFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-        timestamp: new Date().toISOString(),
+      });
+
+      const result = (await response.data) as {
+        success: boolean;
+        error?: string;
       };
-      // For now, just log the data
-      // eslint-disable-next-line no-console
-      console.log("Registration payload", payload);
+
+      if (!result.success) {
+        // Use the error message from the backend if available
+        throw new Error(
+          result.error || "Registration failed. Please try again."
+        );
+      }
+
       setSuccess(
-        "Registration data prepared. Integrate submission backend next."
+        "Registration successful! We will verify your payment and get in touch soon."
       );
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
+      // Optionally reset the form here
+    } catch (err: any) {
+      setError(err.response.data.error || err.message || "Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -256,7 +314,7 @@ export default function RegisterPage() {
 
   return (
     <>
-      <Header />
+      <Header isNotRegisterPage={false} />
       <Background />
       <main className={styles.main}>
         <section className={styles.card}>
@@ -265,225 +323,278 @@ export default function RegisterPage() {
             Register as an individual or a team of two.
           </p>
 
-          <form className={styles.form} onSubmit={onSubmit}>
-            <div className={styles.fieldGroup}>
-              <div className={styles.field}>
-                <label htmlFor="teamName" className={styles.label}>
-                  Team Name
-                </label>
-                <input
-                  id="teamName"
-                  className={styles.input}
-                  type="text"
-                  placeholder="Enter your team name"
-                  value={teamName}
-                  onChange={(e) => setTeamName(e.target.value)}
-                  required
-                />
-              </div>
-
-              <CustomDropdown<1 | 2>
-                label="Number of Members"
-                options={memberOptions}
-                value={count}
-                onChange={(v) => setCount(v)}
-                placeholder="Select count"
-                className={styles.field}
-              />
+          {isLoading ? (
+            <p>Checking registration status...</p>
+          ) : registrationsClosed ? (
+            <div className={styles.error}>
+              <h3 style={{
+                fontFamily:"var(--font-body)"
+              }}>Registrations Closed</h3>
+              <p>
+                We have reached the maximum number of registrations. Thank you
+                for your interest!
+              </p>
             </div>
-
-            <div className={styles.membersWrapper}>
-              {members.map((m, idx) => (
-                <div key={idx} className={styles.memberCard}>
-                  <h3 className={styles.memberTitle}>Member {idx + 1}</h3>
-                  <div className={styles.memberGrid}>
-                    <div className={styles.field}>
-                      <label className={styles.label} htmlFor={`name-${idx}`}>
-                        Name
-                      </label>
-                      <input
-                        id={`name-${idx}`}
-                        className={styles.input}
-                        type="text"
-                        placeholder="Full name"
-                        value={m.name}
-                        onChange={(e) =>
-                          updateMember(idx, { name: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-
-                    <div className={styles.field}>
-                      <label className={styles.label} htmlFor={`email-${idx}`}>
-                        Email
-                      </label>
-                      <input
-                        id={`email-${idx}`}
-                        className={styles.input}
-                        type="email"
-                        placeholder="name@example.com"
-                        value={m.email}
-                        onChange={(e) =>
-                          updateMember(idx, { email: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-
-                    <div className={styles.field}>
-                      <label className={styles.label} htmlFor={`phone-${idx}`}>
-                        Phone (+91)
-                      </label>
-                      <div className={styles.phoneGroup}>
-                        <span className={styles.phonePrefix}>+91</span>
-                        <input
-                          id={`phone-${idx}`}
-                          className={`${styles.input} ${styles.phoneInput}`}
-                          type="tel"
-                          inputMode="numeric"
-                          maxLength={10}
-                          placeholder="10-digit number"
-                          value={m.phone}
-                          onChange={(e) =>
-                            updateMember(idx, {
-                              phone: sanitizePhoneInput(e.target.value),
-                            })
-                          }
-                          required
-                          title="Enter 10-digit Indian mobile number"
-                        />
-                      </div>
-                    </div>
-
-                    <CustomDropdown<Gender>
-                      label="Gender"
-                      options={genderOptions}
-                      value={m.gender}
-                      onChange={(v) => updateMember(idx, { gender: v })}
-                      placeholder="Select gender"
-                      className={styles.field}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <section className={styles.paymentSection}>
-              <h3 className={styles.paymentTitle}>Payment</h3>
-              <p className={styles.feeNotice}>Registration Fee: ₹250</p>
-              <div className={styles.upiBlock}>
-                <div className={styles.qrWrap}>
-                  <img
-                    src="/qr/qr.jpeg"
-                    alt="UPI QR code"
-                    className={styles.qrImg}
-                  />
-                </div>
-                <div className={styles.upiInfo}>
-                  <div
-                    className={styles.upiRow}
-                    onClick={async () => {
-                      try {
-                        await navigator.clipboard.writeText(upiId);
-                        setSuccess("UPI ID copied to clipboard");
-                      } catch {
-                        setError("Failed to copy UPI ID");
-                      }
-                    }}
-                  >
-                    <span className={styles.upiValue}>
-                      {upiId}
-                    </span>
-                  </div>
-                  <span className={styles.helper}>
-                    Scan the QR or pay to the UPI ID above, then enter the
-                    transaction ID or upload a screenshot below.
-                  </span>
-                </div>
-              </div>
-              <div className={styles.paymentGrid}>
+          ) : (
+            <form className={styles.form} onSubmit={onSubmit}>
+              <div className={styles.fieldGroup}>
                 <div className={styles.field}>
-                  <label className={styles.label} htmlFor="transactionId">
-                    Transaction ID
+                  <label htmlFor="teamName" className={styles.label}>
+                    Team Name
                   </label>
                   <input
-                    id="transactionId"
+                    id="teamName"
                     className={styles.input}
                     type="text"
-                    placeholder="Enter transaction/reference ID"
-                    value={transactionId}
-                    onChange={(e) => setTransactionId(e.target.value)}
+                    placeholder="Enter your team name"
+                    value={teamName}
+                    onChange={(e) => setTeamName(e.target.value)}
                     required
                   />
                 </div>
 
                 <div className={styles.field}>
-                  <label className={styles.label} htmlFor="screenshot">
-                    Payment Screenshot
+                  <label htmlFor="college" className={styles.label}>
+                    College / Institution
                   </label>
-                  <div className={styles.fileInputWrap}>
-                    <input
-                      id="screenshot"
-                      ref={fileInputRef}
-                      className={styles.visuallyHidden}
-                      type="file"
-                      accept="image/*"
-                      onChange={onScreenshotChange}
-                    />
-                    <div className={styles.filePicker}>
-                      <button
-                        type="button"
-                        className={styles.fileButton}
-                        onClick={onOpenFileDialog}
-                      >
-                        {screenshotFile ? "Change image" : "Select image"}
-                      </button>
-                      <span className={styles.fileName}>
-                        {screenshotFile
-                          ? screenshotFile.name
-                          : "No file selected"}
-                      </span>
-                      {screenshotFile && (
-                        <button
-                          type="button"
-                          className={styles.fileRemove}
-                          onClick={clearScreenshot}
+                  <input
+                    id="college"
+                    className={styles.input}
+                    type="text"
+                    placeholder="Enter your college name"
+                    value={college}
+                    onChange={(e) => setCollege(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <CustomDropdown<1 | 2>
+                  label="Number of Members"
+                  options={memberOptions}
+                  value={count}
+                  onChange={(v) => setCount(v)}
+                  placeholder="Select count"
+                  className={styles.field}
+                />
+              </div>
+
+              <div className={styles.membersWrapper}>
+                {members.map((m, idx) => (
+                  <div key={idx} className={styles.memberCard}>
+                    <h3 className={styles.memberTitle}>Member {idx + 1}</h3>
+                    <div className={styles.memberGrid}>
+                      <div className={styles.field}>
+                        <label className={styles.label} htmlFor={`name-${idx}`}>
+                          Name
+                        </label>
+                        <input
+                          id={`name-${idx}`}
+                          className={styles.input}
+                          type="text"
+                          placeholder="Full name"
+                          value={m.name}
+                          onChange={(e) =>
+                            updateMember(idx, { name: e.target.value })
+                          }
+                          required
+                        />
+                      </div>
+
+                      <div className={styles.field}>
+                        <label
+                          className={styles.label}
+                          htmlFor={`email-${idx}`}
                         >
-                          Remove
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                  {screenshotPreview && (
-                    <div className={styles.previewBox}>
-                      <img
-                        src={screenshotPreview}
-                        alt="Payment screenshot preview"
-                        className={styles.previewImg}
+                          Email
+                        </label>
+                        <input
+                          id={`email-${idx}`}
+                          className={styles.input}
+                          type="email"
+                          placeholder="name@example.com"
+                          value={m.email}
+                          onChange={(e) =>
+                            updateMember(idx, { email: e.target.value })
+                          }
+                          required
+                        />
+                      </div>
+
+                      <div className={styles.field}>
+                        <label
+                          className={styles.label}
+                          htmlFor={`phone-${idx}`}
+                        >
+                          Phone (+91)
+                        </label>
+                        <div className={styles.phoneGroup}>
+                          <span className={styles.phonePrefix}>+91</span>
+                          <input
+                            id={`phone-${idx}`}
+                            className={`${styles.input} ${styles.phoneInput}`}
+                            type="tel"
+                            inputMode="numeric"
+                            maxLength={10}
+                            placeholder="10-digit number"
+                            value={m.phone}
+                            onChange={(e) =>
+                              updateMember(idx, {
+                                phone: sanitizePhoneInput(e.target.value),
+                              })
+                            }
+                            required
+                            title="Enter 10-digit Indian mobile number"
+                          />
+                        </div>
+                      </div>
+
+                      <CustomDropdown<Gender>
+                        label="Gender"
+                        options={genderOptions}
+                        value={m.gender}
+                        onChange={(v) => updateMember(idx, { gender: v })}
+                        placeholder="Select gender"
+                        className={styles.field}
                       />
                     </div>
-                  )}
-                  <span className={styles.helper}>
-                    Accepted: image files up to 5MB.
-                  </span>
-                </div>
+                  </div>
+                ))}
               </div>
-            </section>
 
-            {error && <div className={styles.error}>{error}</div>}
-            {success && <div className={styles.success}>{success}</div>}
+              <section className={styles.paymentSection}>
+                <h3 className={styles.paymentTitle}>Payment</h3>
+                <p className={styles.feeNotice}>
+                  Registration Fee: ₹{members.length * 250}
+                </p>
+                <div className={styles.upiBlock}>
+                  <div className={styles.qrWrap}>
+                    <img
+                      src="/qr/qr.webp"
+                      alt="UPI QR code"
+                      className={styles.qrImg}
+                    />
+                  </div>
+                  <div className={styles.upiInfo}>
+                    <div
+                      className={styles.upiRow}
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(upiId);
+                          setSuccess("UPI ID copied to clipboard");
+                        } catch {
+                          setError("Failed to copy UPI ID");
+                        }
+                      }}
+                    >
+                      <span className={styles.upiValue}>{upiId}</span>
+                    </div>
+                    <span className={styles.helper}>
+                      Scan the QR or pay to the UPI ID above, then provide
+                      either the transaction ID OR upload a payment screenshot
+                      below.
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.paymentGrid}>
+                  <div className={styles.field}>
+                    <label className={styles.label} htmlFor="userUpiId">
+                      Your UPI ID (used for payment)
+                    </label>
+                    <input
+                      id="userUpiId"
+                      className={styles.input}
+                      type="text"
+                      placeholder="yourname@oksbi"
+                      value={userUpiId}
+                      onChange={(e) => setUserUpiId(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className={styles.field}>
+                    <label className={styles.label} htmlFor="transactionId">
+                      Transaction ID (Optional if screenshot provided)
+                    </label>
+                    <input
+                      id="transactionId"
+                      className={styles.input}
+                      type="text"
+                      placeholder="Enter transaction/reference ID"
+                      value={transactionId}
+                      onChange={(e) => setTransactionId(e.target.value)}
+                      required={!screenshotFile}
+                    />
+                  </div>
 
-            <div className={styles.actions}>
-              <button
-                className={styles.submit}
-                type="submit"
-                disabled={submitting}
-              >
-                {submitting ? "Submitting..." : "Submit"}
-              </button>
-            </div>
-          </form>
+                  <div className={styles.field}>
+                    <label className={styles.label} htmlFor="screenshot">
+                      Payment Screenshot (Optional if transaction ID provided)
+                    </label>
+                    <div className={styles.fileInputWrap}>
+                      <input
+                        id="screenshot"
+                        ref={fileInputRef}
+                        className={styles.visuallyHidden}
+                        type="file"
+                        accept="image/*"
+                        onChange={onScreenshotChange}
+                        aria-describedby="screenshotHelp"
+                        required={!transactionId.trim()}
+                      />
+                      <div className={styles.filePicker}>
+                        <button
+                          type="button"
+                          className={styles.fileButton}
+                          onClick={onOpenFileDialog}
+                        >
+                          {screenshotFile ? "Change image" : "Select image"}
+                        </button>
+                        <span className={styles.fileName}>
+                          {screenshotFile
+                            ? screenshotFile.name
+                            : "No file selected"}
+                        </span>
+                        {screenshotFile && (
+                          <button
+                            type="button"
+                            className={styles.fileRemove}
+                            onClick={clearScreenshot}
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    {screenshotPreview && (
+                      <div className={styles.previewBox}>
+                        <img
+                          src={screenshotPreview}
+                          alt="Payment screenshot preview"
+                          className={styles.previewImg}
+                        />
+                      </div>
+                    )}
+                    <span className={styles.helper}>
+                      Accepted: image files up to 5MB. Provide either this OR
+                      transaction ID above.
+                    </span>
+                  </div>
+                </div>
+              </section>
+
+              {error && <div className={styles.error}>{error}</div>}
+              {success && <div className={styles.success}>{success}</div>}
+
+              <div className={styles.actions}>
+                <button
+                  className={styles.submit}
+                  type="submit"
+                  disabled={submitting}
+                >
+                  {submitting ? "Submitting..." : "Submit"}
+                </button>
+              </div>
+            </form>
+          )}
         </section>
       </main>
       <Footer isNotRegisterPage={false} />

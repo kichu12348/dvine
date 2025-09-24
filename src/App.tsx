@@ -1,16 +1,33 @@
-import { useState } from 'react';
-import './App.css'
-import LoadingScreen from './components/LoadingScreen';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import AboutSection from './components/About';
-import BenefitsSection from './components/Benefits';
-import FAQSection from './components/FAQ';
-import Footer from './components/Footer';
-import Background from './components/Background';
+import { useEffect, useState } from "react";
+import "./App.css";
+import LoadingScreen from "./components/LoadingScreen";
+import Header from "./components/Header";
+import Hero from "./components/Hero";
+import AboutSection from "./components/About";
+import BenefitsSection from "./components/Benefits";
+import FAQSection from "./components/FAQ";
+import Footer from "./components/Footer";
+import Background from "./components/Background";
+import Organizers from "./components/Organizers";
+import Venue from "./components/Venue";
+
+const assets = [
+  "/assets/bubble-left.svg",
+  "/assets/bubble-right.svg",
+  "/assets/star.svg",
+  "/assets/left-semi.svg",
+];
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const img = new Image();
+    assets.forEach((src) => {
+      img.src = src;
+      img.onload = () => {};
+    });
+  }, []);
 
   const handleLoadingComplete = () => {
     setIsLoading(false);
@@ -30,7 +47,7 @@ function App() {
           onComplete={handleLoadingComplete}
         />
       )}
-      
+
       {!isLoading && (
         <>
           <Header />
@@ -38,14 +55,16 @@ function App() {
           <main>
             <Hero onRegisterClick={handleRegisterClick} />
             <AboutSection />
+            <Venue />
             <BenefitsSection />
+            <Organizers />
             <FAQSection />
           </main>
           <Footer />
         </>
       )}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
